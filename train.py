@@ -104,7 +104,7 @@ def test(epoch):
     tensorboard_logger.log_value('test_loss', test_loss/total_batch)
 
 
-def adjust_learning_rate(epoch, stage=[150, 250]):
+def adjust_learning_rate(epoch, stage=[250, 375]):
     order = np.sum(epoch >= np.array(stage))
     lr = args.lr * (0.1 ** order)
     for param_group in optimizer.param_groups:
@@ -157,7 +157,7 @@ else:
 
 # Loss Fn and Optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(rnet.parameters(), lr=args.lr, momentum=0.9, weight_decay=0.0001)
+optimizer = optim.SGD(rnet.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
 
 # logger
 tensorboard_logger.configure('./log')

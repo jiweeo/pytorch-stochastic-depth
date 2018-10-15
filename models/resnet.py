@@ -31,7 +31,7 @@ class FlatResNet(nn.Module):
             p = 1.0
             for segment, num_blocks in enumerate(self.layer_config):
                 for b in range(num_blocks):
-                    action = np.random.choice([1, 0], 1, p=[p, 1-p])
+                    action = np.random.choice([1, 0], p=[p, 1-p])
                     p = p - step
                     residual = self.ds[segment](x) if b==0 else x
                     if action == 0:
