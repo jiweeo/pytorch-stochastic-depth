@@ -17,7 +17,7 @@ cudnn.benchmark = True
 parser = argparse.ArgumentParser(description='Dynamic ResNet Training')
 parser.add_argument('--lr', type=float, default=.1, help='learning rate')
 parser.add_argument('--batch_size', type=int, default=128, help='batch size')
-parser.add_argument('--max_epochs', type=int, default=164, #350,
+parser.add_argument('--max_epochs', type=int, default=164,
         help='total epochs to run')
 parser.add_argument('--resume', '-r', action='store_true', help='resume from checkpoint')
 args = parser.parse_args()
@@ -126,8 +126,8 @@ def get_transforms():
 train_tf, test_tf = get_transforms()
 trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=train_tf)
 testset = datasets.CIFAR10(root='./data', train=False, download=True, transform=test_tf)
-trainloader = D.DataLoader(trainset, batch_size=num_devices*args.batch_size, shuffle=True, num_workers=4)
-testloader = D.DataLoader(testset, batch_size=num_devices*args.batch_size, shuffle=False, num_workers=4)
+trainloader = D.DataLoader(trainset, batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=True)
+testloader = D.DataLoader(testset, batch_size=args.batch_size, shuffle=False, num_workers=4, pin_memory=True)
 best_test_acc = 0.0
 
 # resnet110
