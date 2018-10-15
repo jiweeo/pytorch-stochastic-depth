@@ -33,7 +33,6 @@ class FlatResNet(nn.Module):
                 for b in range(num_blocks):
                     action = np.random.choice([1, 0], 1, p=[p, 1-p])
                     p = p - step
-                    print(p)
                     residual = self.ds[segment](x) if b==0 else x
                     if action == 0:
                         x = residual
