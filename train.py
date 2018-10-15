@@ -1,7 +1,3 @@
-'''
-    pretrain the ResNet on CIFAR dataset
-'''
-
 import os
 import torch
 import torch.nn as nn
@@ -27,7 +23,7 @@ parser.add_argument('--resume', '-r', action='store_true', help='resume from che
 args = parser.parse_args()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
+num_devices = torch.cuda.device_count()
 
 def train(epoch):
     rnet.train()
@@ -59,8 +55,8 @@ def train(epoch):
              correct / total,
              optimizer.param_groups[0]['lr']))
 
-    tensorboard_logger.log_value('train_acc', correct/total)
-    tensorboard_logger.log_value('train_loss', train_loss / total_batch)
+    tensorboard_logger.log_value('train_acc', correct/total, epoch)
+    tensorboard_logger.log_value('train_loss', train_loss / total_batch, epoch)
 
 
 def test(epoch):
@@ -100,8 +96,8 @@ def test(epoch):
             'epoch': epoch,
         }
         torch.save(state, 'resnet110.t7')
-    tensorboard_logger.log_value('test_acc', acc)
-    tensorboard_logger.log_value('test_loss', test_loss/total_batch)
+    tensorboard_logger.log_value('test_acc', acc, epoch)
+    tensorboard_logger.log_value('test_loss', test_loss/total_batch, epoch)
 
 
 def adjust_learning_rate(epoch, stage=[250, 375]):
@@ -125,19 +121,20 @@ def get_transforms():
     return train_tf, test_tf
 
 
+
 # dataset and dataloader
 train_tf, test_tf = get_transforms()
 trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=train_tf)
 testset = datasets.CIFAR10(root='./data', train=False, download=True, transform=test_tf)
-trainloader = D.DataLoader(trainset, batch_size=args.batch_size, shuffle=True, num_workers=4)
-testloader = D.DataLoader(testset, batch_size=args.batch_size, shuffle=False, num_workers=4)
+trainloader = D.DataLoader(trainset, batch_size=num_devices*args.batch_size, shuffle=True, num_workers=4)
+testloader = D.DataLoader(testset, batch_size=num_devices*args.batch_size, shuffle=False, num_workers=4)
 best_test_acc = 0.0
 
 # resnet110
 num_layers = 54
 rnet = resnet.FlatResNet32(base.BasicBlock, [18, 18, 18], num_classes=10)
 rnet.to(device)
-if torch.cuda.device_count()>1:
+if num_devices > 1:
     print('paralleling for multiple GPUs...')
     rnet = nn.DataParallel(rnet)
 
