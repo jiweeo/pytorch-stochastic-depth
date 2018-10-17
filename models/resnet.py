@@ -4,6 +4,7 @@ import numpy as np
 import math
 from models import base
 
+np.random.seed(2 ** 10)
 
 class FlatResNet(nn.Module):
 
