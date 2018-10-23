@@ -125,8 +125,8 @@ def get_transforms():
 train_tf, test_tf = get_transforms()
 trainset = datasets.CIFAR10(root='./data', train=True, download=True, transform=train_tf)
 testset = datasets.CIFAR10(root='./data', train=False, download=True, transform=test_tf)
-trainloader = D.DataLoader(trainset, batch_size=num_devices*args.batch_size, shuffle=True, num_workers=4)
-testloader = D.DataLoader(testset, batch_size=num_devices*args.batch_size, shuffle=False, num_workers=4)
+trainloader = D.DataLoader(trainset, batch_size=args.batch_size, shuffle=True, num_workers=4, pin_memory=True)
+testloader = D.DataLoader(testset, batch_size=args.batch_size, shuffle=False, num_workers=4, pin_memory=True)
 best_test_acc = 0.0
 
 # resnet110
