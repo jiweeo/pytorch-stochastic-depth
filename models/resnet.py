@@ -52,7 +52,7 @@ class FlatResNet32(FlatResNet):
 
         self.inplanes = 16
         self.conv1 = base.conv3x3(3, 16)
-        self.bn1 = nn.BatchNorm2d(16)
+        self.bn1 = nn.BatchNorm2d(16, track_running_stats=False)
         self.relu = nn.ReLU(inplace=True)
         self.avgpool = nn.AvgPool2d(8)
 
