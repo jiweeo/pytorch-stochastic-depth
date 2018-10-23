@@ -17,8 +17,7 @@ cudnn.benchmark = True
 parser = argparse.ArgumentParser(description='Dynamic ResNet Training')
 parser.add_argument('--lr', type=float, default=.1, help='learning rate')
 parser.add_argument('--batch_size', type=int, default=128, help='batch size')
-parser.add_argument('--max_epochs', type=int, default=164, #350,
-        help='total epochs to run')
+parser.add_argument('--max_epochs', type=int, default=500, help='total epochs to run')
 parser.add_argument('--resume', '-r', action='store_true', help='resume from checkpoint')
 args = parser.parse_args()
 
@@ -157,7 +156,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(rnet.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
 
 # logger
-tensorboard_logger.configure('./log')
+tensorboard_logger.configure('./log/run1')
 
 for epoch in range(start_epoch+1, args.max_epochs):
     train(epoch)
